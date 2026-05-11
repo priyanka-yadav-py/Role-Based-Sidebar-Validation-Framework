@@ -4,8 +4,7 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.FileInputStream;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class ExcelUtils {
 
@@ -13,27 +12,34 @@ public class ExcelUtils {
 
         List<Object[]> data = new ArrayList<>();
 
-        try {
-            FileInputStream fis = new FileInputStream(filePath);
-            Workbook workbook = new XSSFWorkbook(fis);
+        try (FileInputStream fis = new FileInputStream(filePath);
+             Workbook workbook = new XSSFWorkbook(fis)) {
+
             Sheet sheet = workbook.getSheet(sheetName);
+
+            // Read header row (dynamic columns)
+            Row headerRow = sheet.getRow(0);
+            int colCount = headerRow.getPhysicalNumberOfCells();
 
             int rowCount = sheet.getPhysicalNumberOfRows();
 
-            // Skip header (row 0)
             for (int i = 1; i < rowCount; i++) {
 
                 Row row = sheet.getRow(i);
+                if (row == null) continue;
 
-                String username = getCellValue(row.getCell(0));
-                String password = getCellValue(row.getCell(1));
-                String menus = getCellValue(row.getCell(2));
+                Map<String, String> rowData = new HashMap<>();
 
-                data.add(new Object[]{username, password, menus});
+                for (int j = 0; j < colCount; j++) {
+
+                    String key = getCellValue(headerRow.getCell(j));
+                    String value = getCellValue(row.getCell(j));
+
+                    rowData.put(key, value);
+                }
+
+                data.add(new Object[]{rowData});
             }
-
-            workbook.close();
-            fis.close();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -42,7 +48,6 @@ public class ExcelUtils {
         return data.toArray(new Object[0][0]);
     }
 
-    // 🔹 Helper method to safely read any cell type
     private static String getCellValue(Cell cell) {
 
         if (cell == null) return "";
@@ -58,7 +63,7 @@ public class ExcelUtils {
                 return String.valueOf(cell.getBooleanCellValue());
 
             case FORMULA:
-                return cell.getCellFormula();
+                return new DataFormatter().formatCellValue(cell);
 
             default:
                 return "";

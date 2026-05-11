@@ -7,7 +7,7 @@
         <methods>
           <include name="setUp"/>
           <include name="tearDown"/>
-          <include name="loginWithMultipleUsers" invocation-numbers="6 7"/>
+          <include name="loginWithMultipleUsers" invocation-numbers="5 6 7"/>
         </methods>
       </class> <!-- tests.LoginTest -->
     </classes>

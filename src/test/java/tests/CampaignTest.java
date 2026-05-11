@@ -29,11 +29,11 @@ public class CampaignTest extends BaseTest {
 
         System.out.println("NAVIGATION DONE");
         
-        // ✅ Validation
+        //Validation
         if (page.isOnCampaignListPage()) {
-            System.out.println("On Manage Campaign Page ✅");
+            System.out.println("On Manage Campaign Page ");
         } else {
-            System.out.println("Navigation Failed ❌");
+            System.out.println("Navigation Failed ");
         }
     }
     }
