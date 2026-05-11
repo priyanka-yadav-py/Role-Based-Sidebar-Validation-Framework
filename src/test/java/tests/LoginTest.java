@@ -130,9 +130,9 @@ public class LoginTest extends BaseTest {
 
         } catch (Exception e) {
 
-            System.out.println("⚠ Logout not found, using fallback URL");
+            System.out.println(" Logout not found, using fallback URL");
 
-            driver.get("https://lmsstage1.collegedunia.com/logout");
+            driver.get("http://lmsstage2.collegedunia.com/logout");
         }
     }
 }
